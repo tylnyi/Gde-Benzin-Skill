@@ -4,6 +4,9 @@
 Клиент передаёт `Accept: application/json` и собственный `User-Agent`.
 Не отправляйте токены админки, bot-api или ingest. Это отдельный публичный клиент.
 
+Публичное отображение данных сопровождается обязательными ссылками на сайт и
+YouTube автора: [условия использования API](api-terms.md).
+
 ## Найти место
 
 `GET /geocode?text=Тверь` → объект с `items`:
@@ -57,6 +60,11 @@
 
 `--format json` даёт `schema_version: 1`, `provider`, `checked_at`, `source_url`,
 `status` и список `stations` (для `locate` — `places`).
+С v1.1.0 все ответы клиента, включая ошибки и пустую выдачу, дополнительно содержат
+`attribution`: `required`, `website_url`, `author_name`, `author_url`, `terms_url`,
+`terms_version`. Это добавочное поле в схеме версии 1. При отображении данных
+показывайте ссылки на сайт и YouTube в интерфейсе или общем блоке источников ответа.
+Наличие полей в JSON само по себе не заменяет видимые ссылки.
 Станция содержит `id`, `name`, `address`, координаты, `map_url`, `fuels`;
 поиск также возвращает `distance_km`. Марки нормализованы в объекты с
 `available`, `availability_age_seconds`, `price_rub_per_liter`, `price_age_seconds`.

@@ -15,9 +15,11 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 API = "https://gde-benzin.ru/api"
 SITE = "https://gde-benzin.ru/"
+AUTHOR_URL = "https://www.youtube.com/@d_tylnyi"
+TERMS_URL = "https://github.com/tylnyi/Gde-Benzin-Skill/blob/v1.1.0/skills/gde-benzin/references/api-terms.md"
 MAX_BODY = 8 * 1024 * 1024
 EARTH_KM = 6371.0088
 LABELS = {"ai92": "АИ-92", "ai95": "АИ-95", "ai98": "АИ-98", "ai100": "АИ-100", "dt": "ДТ"}
@@ -195,7 +197,14 @@ def normalize_station(raw, now, status_age, price_age, lat=None, lon=None):
 
 def envelope():
     return {"schema_version": 1, "provider": "Где бензин", "source_url": map_url(),
+            "attribution": {"required": True, "website_url": SITE,
+                            "author_name": "Дмитрий Тыльный", "author_url": AUTHOR_URL,
+                            "terms_url": TERMS_URL, "terms_version": "1.0"},
             "checked_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}
+
+
+def attribution_footer(data):
+    return f"Данные: [Где бензин]({data['source_url']}) · [Автор проекта — Дмитрий Тыльный]({AUTHOR_URL})"
 
 
 def search(client, args):
@@ -272,7 +281,7 @@ def render(data, selected_fuel=None):
         lines.append("Подходящих актуальных сведений в этой выборке не найдено. Это не означает отсутствие топлива.")
     if data.get("note"):
         lines.append(data["note"])
-    lines.append(f"[Карта «Где бензин»]({data['source_url']})")
+    lines.append(attribution_footer(data))
     return "\n".join(lines)
 
 
@@ -340,7 +349,7 @@ def main(argv=None, client=None):
         return 0
     except ApiError as exc:
         data = {**envelope(), "status": "incomplete" if isinstance(exc, IncompleteResult) else "error", "message": str(exc)}
-        print(json.dumps(data, ensure_ascii=False) if args.format == "json" else str(exc) + "\nКарта: " + data["source_url"])
+        print(json.dumps(data, ensure_ascii=False) if args.format == "json" else str(exc) + "\n" + attribution_footer(data))
         return 4 if isinstance(exc, IncompleteResult) else 3
 
 

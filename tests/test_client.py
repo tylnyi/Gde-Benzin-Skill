@@ -166,6 +166,48 @@ class GeographyTests(unittest.TestCase):
 
 
 class OutputAndCliTests(unittest.TestCase):
+    def attribution_cases(self):
+        return (
+            (["search", "--lat", "55.75", "--lon", "37.62"], payload(station()), None),
+            (["search", "--lat", "55.75", "--lon", "37.62"], payload(), None),
+            (["station", "1"], station(), None),
+            (["locate", "Тверь"], {"items": [{"n": "Тверь", "lat": 56, "lon": 35}]}, None),
+            (["station", "1"], None, api.ApiError("offline")),
+            (["search", "--lat", "55.75", "--lon", "37.62"], payload(truncated=True), None),
+        )
+
+    def test_every_json_response_exposes_both_required_links(self):
+        for command, result, error in self.attribution_cases():
+            client = Mock();client.get.return_value = result;client.get.side_effect = error
+            output = io.StringIO()
+            with self.subTest(command=command, error=error, result=result), contextlib.redirect_stdout(output):
+                api.main(command + ["--format", "json"], client)
+            data = json.loads(output.getvalue())
+            attribution = data["attribution"]
+            self.assertTrue(attribution["required"])
+            self.assertEqual(attribution["website_url"], "https://gde-benzin.ru/")
+            self.assertEqual(attribution["author_url"], "https://www.youtube.com/@d_tylnyi")
+            self.assertEqual(attribution["terms_version"], "1.0")
+            self.assertEqual(urlsplit(attribution["terms_url"]).hostname, "github.com")
+
+    def test_every_text_response_has_one_common_credit_block(self):
+        for command, result, error in self.attribution_cases():
+            client = Mock();client.get.return_value = result;client.get.side_effect = error
+            output = io.StringIO()
+            with self.subTest(command=command, error=error, result=result), contextlib.redirect_stdout(output):
+                api.main(command, client)
+            result_text = output.getvalue()
+            self.assertEqual(result_text.count("https://www.youtube.com/@d_tylnyi"), 1)
+            self.assertEqual(result_text.count("Данные: [Где бензин]("), 1)
+            self.assertIn("utm_source=ai_agent", result_text)
+
+    def test_author_credit_is_not_repeated_per_station(self):
+        client = Mock(get=Mock(return_value=payload(station(1), station(2))))
+        result_text = api.render(api.search(client, args()))
+        self.assertEqual(result_text.count("https://www.youtube.com/@d_tylnyi"), 1)
+        for sid in (1, 2):
+            self.assertIn(api.map_url(sid), result_text)
+
     def test_links_have_station_fragment_and_referral_parameters(self):
         for sid in (1, 41134):
             u = urlsplit(api.map_url(sid))

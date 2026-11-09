@@ -33,7 +33,7 @@ npx skills add tylnyi/Gde-Benzin-Skill --skill gde-benzin -a cursor
 
 ```bash
 git clone https://github.com/tylnyi/Gde-Benzin-Skill.git
-cd gde-benzin-skill
+cd Gde-Benzin-Skill
 python3 skills/gde-benzin/scripts/gde_benzin.py --help
 ```
 
@@ -107,6 +107,7 @@ https://gde-benzin.ru/?utm_source=ai_agent&utm_medium=referral&utm_campaign=offi
 
 - [Инструкция для агента](skills/gde-benzin/SKILL.md).
 - [Публичный HTTP-контракт и формат ответа клиента](skills/gde-benzin/references/api.md).
+- [Условия использования API и обязательные ссылки](skills/gde-benzin/references/api-terms.md).
 - [Python-клиент без зависимостей](skills/gde-benzin/scripts/gde_benzin.py).
 - [Проверки](tests/test_client.py): `python3 -m unittest discover -s tests -v`.
 - [Проверка живого API](tests/live_smoke.py): `python3 tests/live_smoke.py`.
@@ -120,8 +121,32 @@ https://gde-benzin.ru/?utm_source=ai_agent&utm_medium=referral&utm_campaign=offi
 повтор при временной ошибке ограничен. При 429 соблюдается `Retry-After`.
 Для большого приложения согласуйте нагрузку с владельцем сервиса.
 
-Код skill распространяется под MIT. Лицензия кода не устанавливает отдельные
-условия использования данных API.
+## Указание источника и автора
+
+При публичном отображении данных API обязательны две видимые кликабельные ссылки:
+[«Где бензин»](https://gde-benzin.ru/) и
+[«Автор проекта — Дмитрий Тыльный»](https://www.youtube.com/@d_tylnyi).
+На сайте или в приложении их можно разместить рядом с данными либо в доступном
+разделе об интеграции. В ответе агента или бота — один общий блок источников,
+без повторения ссылки на YouTube у каждой АЗС.
+
+Текстовый клиент выводит обе ссылки автоматически. JSON содержит объект
+`attribution` с обязательными ссылками и адресом условий; приложение должно
+показать их пользователю, а не оставить только в техническом ответе.
+Полный документ: [условия API, версия 1.0](skills/gde-benzin/references/api-terms.md).
+
+Код остаётся под MIT. Условия API опубликованы отдельно; их принятие интегратором
+согласуется при подключении. Клиент не проверяет чужие интерфейсы и не реализует
+автоматическую блокировку за отсутствие ссылок.
+
+## Обновление установленного skill
+
+```bash
+npx skills update gde-benzin
+```
+
+Релиз v1.1.0 добавляет условия API и обязательные ссылки на сайт и YouTube автора.
+Ранее опубликованный код v1.0.0 сохраняет свою лицензию MIT.
 
 ---
 
@@ -135,3 +160,9 @@ API key. It never substitutes another fuel grade automatically. Availability
 and prices have separate freshness checks. Distances are straight-line distances.
 An installed skill and network/tool access are required; this does not enable
 the integration in every hosted AI chat automatically.
+
+Public displays of API data must credit both [Gde Benzin](https://gde-benzin.ru/)
+and [project author Dmitry Tylnyi on YouTube](https://www.youtube.com/@d_tylnyi).
+Place both clickable links beside the data or in an accessible integration credits
+section; agent replies include them once in their source block. See the
+[separate API terms](skills/gde-benzin/references/api-terms.md). Code remains MIT.
