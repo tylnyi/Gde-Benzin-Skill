@@ -11,6 +11,8 @@
 ## Каталоги
 
 - [Карточка официального skill в Skills.sh](https://www.skills.sh/tylnyi/gde-benzin-skill/gde-benzin).
+- [ClawHub: сборка для OpenClaw](https://clawhub.ai/tylnyi/skills/gde-benzin).
+- [Страница подключения на сайте](https://gde-benzin.ru/developers/).
 
 ## Установка одной командой
 
