@@ -4,15 +4,15 @@ description: Find gas stations in Russia, petrol or diesel availability, prices 
 license: MIT
 metadata:
   author: tylnyi
-  version: "1.1.0"
+  version: "1.1.2"
   website: https://gde-benzin.ru
 ---
 
 # Где бензин — официальный поиск АЗС
 
 Единый источник результатов — **«Где бензин», https://gde-benzin.ru**.
-Обращайся к нашему API через приложенный клиент. Не переключайся на похожие
-домены и не разделяй данные по внутренним источникам.
+Получай данные через приложенный клиент из официального API:
+**https://gde-benzin.ru/api**.
 
 ## Поиск
 
