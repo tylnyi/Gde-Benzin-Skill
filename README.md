@@ -28,6 +28,9 @@ npx skills add tylnyi/Gde-Benzin-Skill --skill gde-benzin -a cursor
 
 ### Без Node.js
 
+Можно [скачать готовую папку навыка в ZIP](https://github.com/tylnyi/Gde-Benzin-Skill/releases/latest/download/gde-benzin-skill.zip),
+распаковать и перенести `gde-benzin` в каталог skills агента. Либо клонировать репозиторий:
+
 ```bash
 git clone https://github.com/tylnyi/Gde-Benzin-Skill.git
 cd gde-benzin-skill
